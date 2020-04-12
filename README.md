@@ -6,3 +6,4 @@
 1. ppt - 本地课程的讲义
 2. assignment - 本次课程的作业：绘制一个桌面时钟，在Clock.java类中完成todo部分
 
+# ！！！如需生成后的 debug apk 还请查看 Release 页面。

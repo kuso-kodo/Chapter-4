@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -41,6 +42,7 @@ public class Clock extends View {
     private int degreesColor;
 
     private Paint mNeedlePaint;
+    private Handler mHandler;
 
     public Clock(Context context) {
         super(context);
@@ -84,6 +86,7 @@ public class Clock extends View {
         mNeedlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mNeedlePaint.setStrokeCap(Paint.Cap.ROUND);
 
+        mHandler = new Handler();
     }
 
     @Override
@@ -105,8 +108,13 @@ public class Clock extends View {
         drawHoursValues(canvas);
         drawNeedles(canvas);
 
-        // todo 每一秒刷新一次，让指针动起来
-
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                invalidate();
+            }
+        };
+        mHandler.postDelayed(runnable, 1000);
     }
 
     private void drawDegrees(Canvas canvas) {
@@ -147,8 +155,6 @@ public class Clock extends View {
     private void drawHoursValues(Canvas canvas) {
         // Default Color:
         // - hoursValuesColor
-
-
     }
 
     /**
@@ -166,12 +172,10 @@ public class Clock extends View {
         // 画秒针
         drawPointer(canvas, 2, nowSeconds);
         // 画分针
-        // todo 画分针
+        drawPointer(canvas, 1, nowMinutes);
         // 画时针
         int part = nowMinutes / 12;
         drawPointer(canvas, 0, 5 * nowHours + part);
-
-
     }
 
 
@@ -188,8 +192,9 @@ public class Clock extends View {
                 pointerHeadXY = getPointerHeadXY(HOUR_POINTER_LENGTH, degree);
                 break;
             case 1:
-                // todo 画分针，设置分针的颜色
-
+                degree = value * UNIT_DEGREE;
+                mNeedlePaint.setColor(Color.BLUE);
+                pointerHeadXY = getPointerHeadXY(SECOND_POINTER_LENGTH, degree);
                 break;
             case 2:
                 degree = value * UNIT_DEGREE;
